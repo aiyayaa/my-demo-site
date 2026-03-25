@@ -1,15 +1,741 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>我的演示站</title>
-  <link rel="stylesheet" href="./style.css" />
+  <title>数据处理与研究支持分系统（探路者一号 ）工作进展及后续工作计划</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #101a2f;
+      --panel-2: #16213d;
+      --text: #eaf1ff;
+      --muted: #a9b7d6;
+      --line: rgba(255,255,255,0.12);
+      --blue: #5aa9ff;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --shadow: 0 12px 36px rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+      background: radial-gradient(circle at top left, #132241 0%, #0b1220 45%, #070c16 100%);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .deck {
+      width: 100%;
+    }
+
+    .slide {
+      min-height: 100vh;
+      padding: 44px 56px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(140deg, rgba(90,169,255,0.08), transparent 40%, rgba(34,197,94,0.05));
+      pointer-events: none;
+    }
+
+    .header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+
+    .title-wrap { max-width: 78%; }
+
+    .title {
+      margin: 0;
+      font-size: 40px;
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .page-no {
+      color: rgba(255,255,255,0.55);
+      font-size: 18px;
+      font-weight: 700;
+      padding-top: 8px;
+      white-space: nowrap;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-top: 12px;
+      color: rgba(255,255,255,0.55);
+      font-size: 14px;
+    }
+
+    .footer .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(90,169,255,0.8), rgba(255,255,255,0.05));
+      border-radius: 999px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+
+    .big-point {
+      font-size: 22px;
+      line-height: 1.8;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .lead {
+      font-size: 18px;
+      line-height: 1.9;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #d7e7ff;
+      background: rgba(90,169,255,0.12);
+      border: 1px solid rgba(90,169,255,0.28);
+      width: fit-content;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .kpi {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(90,169,255,0.12), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .kpi .num {
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .kpi .label {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .table-wrap {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead th {
+      background: rgba(90,169,255,0.16);
+      color: #f5f8ff;
+      font-weight: 700;
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      color: #edf3ff;
+      vertical-align: middle;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(255,255,255,0.02);
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    .code {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 13px;
+      color: #cfe0ff;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.04);
+    }
+
+    .status.green { background: var(--green); }
+    .status.yellow { background: var(--yellow); }
+    .status.red { background: var(--red); }
+
+    .status::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      opacity: 0.22;
+    }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title {
+      margin: 0 0 12px;
+      font-size: 22px;
+      line-height: 1.5;
+      font-weight: 800;
+    }
+
+    .card-subtitle {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    ul.clean, ol.clean {
+      margin: 8px 0 0 0;
+      padding-left: 24px;
+      line-height: 1.95;
+      font-size: 17px;
+    }
+
+    ul.clean li, ol.clean li {
+      margin: 6px 0;
+    }
+
+    .risk-box {
+      border-radius: 22px;
+      padding: 22px 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      box-shadow: var(--shadow);
+    }
+
+    .risk-box.red { border-left: 5px solid var(--red); }
+    .risk-box.yellow { border-left: 5px solid var(--yellow); }
+
+    .risk-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .risk-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 22px;
+      margin-top: 12px;
+    }
+
+    .mini {
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mini h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .mini p, .mini li {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .time-card {
+      position: relative;
+      padding: 28px 26px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(90,169,255,0.12), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .time-date {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: #ffffff;
+    }
+
+    .time-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.9;
+    }
+
+    .issue-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+    }
+
+    .highlight-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .highlight-item {
+      padding: 18px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .highlight-item strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .highlight-item span {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .closing {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 22px;
+      min-height: 60vh;
+    }
+
+    .closing h2 {
+      margin: 0;
+      font-size: 46px;
+      line-height: 1.3;
+    }
+
+    .closing p {
+      margin: 0;
+      max-width: 980px;
+      font-size: 22px;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    .closing .summary-box {
+      padding: 22px 28px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.9;
+      max-width: 1080px;
+    }
+
+    @media (max-width: 1200px) {
+      .hero, .grid-2, .timeline, .issue-grid, .cols { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .title-wrap { max-width: 100%; }
+      .slide { padding: 32px 24px 28px; }
+      .title { font-size: 32px; }
+    }
+  </style>
 </head>
 <body>
-  <h1>GitHub Pages 演示成功</h1>
-  <p>这个页面已经发布到公网了。</p>
+  <div class="deck">
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">工作汇报</div>
+          <h1 class="title">探路者一号 数据处理与研究支持分系统工作进展及后续工作计划</h1>
+        </div>
+        <div class="page-no">01</div>
+      </div>
+      <div class="content">
+        <div class="hero">
+          <div class="panel">
+            <div class="big-point">当前总体状态：各软件需求已明确，正在按既定节点开展软件研制。</div>
+            <p class="lead">现阶段工作围绕软件研制推进、风险项闭环处置、配置项测试准备及外部输入协调四条主线同步开展，整体工作正在持续推进。</p>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>探路者一号 / 数据处理与研究支持分系统</span><div class="line"></div><span>工作进展与计划汇报</span></div>
+    </section>
 
-  <script src="./script.js"></script>
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">一、当前进展</div>
+          <h2 class="title">软件研制进展总体情况</h2>
+          <div class="subtitle">各软件需求已明确，研制工作已全面展开；目前重点关注 1 项进度滞后的软件和 2 项存在进度风险的软件。</div>
+        </div>
+        <div class="page-no">02</div>
+      </div>
+      <div class="content">
+        <div class="legend">
+          <span class="legend-item"><span class="status green"></span> 正常推进</span>
+          <span class="legend-item"><span class="status yellow"></span> 进度滞后</span>
+          <span class="legend-item"><span class="status red"></span> 存在进度风险</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:6%">#</th>
+                <th style="width:16%">软件代号</th>
+                <th>软件名称</th>
+                <th style="width:10%">共用/专用</th>
+                <th style="width:10%">状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td class="code">TY-DZS00-01</td><td>探源科学卫星数据处理作业调度引擎软件</td><td>共用</td><td><span class="status red" title="红灯"></span></td></tr>
+              <tr><td>2</td><td class="code">TY-DZS00-02</td><td>探源科学卫星公共信息库管理软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>3</td><td class="code">TY-DZS00-03</td><td>探源科学卫星元数据编审与数据集构建软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>4</td><td class="code">TY-DZS00-04</td><td>探源科学卫星数据集档案库及管理软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>5</td><td class="code">TY-DZS00-05</td><td>探源科学卫星数据产品归档汇交服务软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>6</td><td class="code">TY-DZS00-06</td><td>探源科学卫星数据分级存储管理软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>7</td><td class="code">TY-DZS00-07</td><td>探源科学卫星数据备份与恢复软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>8</td><td class="code">TY-DZS00-08</td><td>探源科学卫星任务运行网统一门户软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>9</td><td class="code">TY-DZS00-09</td><td>探源科学卫星数据系统综合监管软件</td><td>共用</td><td><span class="status yellow" title="黄灯"></span></td></tr>
+              <tr><td>10</td><td class="code">TY-DZS00-10</td><td>探源科学卫星日志管理与数据溯源软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>11</td><td class="code">TY-DZS00-11</td><td>探源科学卫星智能安全认证与权限管控软件</td><td>共用</td><td><span class="status green" title="绿灯"></span></td></tr>
+              <tr><td>12</td><td class="code">TY-00-DZS-01</td><td>探路者一号卫星数据预处理与产品生成软件</td><td>专用</td><td><span class="status red" title="红灯"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="footer"><span>当前进展</span><div class="line"></div><span>分系统总体研制状态</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">重点关注项</div>
+          <h2 class="title">TY-DZS00-09 探源科学卫星数据系统综合监管软件</h2>
+          <div class="subtitle">进度滞后</div>
+        </div>
+        <div class="page-no">03</div>
+      </div>
+      <div class="content">
+        <div class="risk-box yellow">
+          <div class="risk-head">
+            <h3 class="risk-title">当前状态 <span class="pill"><span class="status yellow"></span></span></h3>
+          </div>
+          <div class="cols">
+            <div class="mini">
+              <h4>问题原因</h4>
+              <p>该软件因为涉及到整个系统的软件、日志和流程管理，导致前期需求确认相对滞后，影响研制进度。</p>
+            </div>
+            <div class="mini">
+              <h4>当前进展</h4>
+              <p>本周已组织开展专题讨论会，对相关需求进行了集中确认，当前需求边界已基本清晰，后续可按既定安排推进研制工作。</p>
+            </div>
+            <div class="mini" style="grid-column: 1 / -1;">
+              <h4>结论</h4>
+              <p>该项风险已进入收敛阶段，可如期完成软件研制任务，后续重点做好需求落地、研发执行及阶段性跟踪闭环。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>重点软件项</span><div class="line"></div><span>需求已确认，具备按期推进条件</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">重点风险项</div>
+          <h2 class="title">TY-DZS00-01 探源科学卫星数据处理作业调度引擎软件</h2>
+          <div class="subtitle">存在进度风险</div>
+        </div>
+        <div class="page-no">04</div>
+      </div>
+      <div class="content">
+        <div class="risk-box red">
+          <div class="risk-head">
+            <h3 class="risk-title">当前状态 <span class="pill"><span class="status red"></span></span></h3>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3 class="card-title">风险原因</h3>
+              <ul class="clean">
+                <li>该软件需与一体化运行环境中的 K8s 协同工作，同时采用开源框架 DolphinScheduler 开展建设。</li>
+                <li>前期围绕技术路线、实现方式及可行性开展了较长时间的技术调研与实现验证，造成阶段性进度压力，存在研制进度风险。</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3 class="card-title">当前进展</h3>
+              <ul class="clean">
+                <li>本周已组织专题会进行专项讨论，进一步聚焦关键技术问题。</li>
+                <li>当前仍存在 K8s 存储挂载相关技术验证问题，计划于本周内完成验证闭环。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3 class="card-title">进度影响</h3>
+              <ol class="clean">
+                <li>当前进展不影响软件配置项测试计划和说明的评审工作。</li>
+                <li>软件配置测试存在进度风险，需持续重点跟踪。</li>
+              </ol>
+            </div>
+            <div class="panel">
+              <h3 class="card-title">当前措施</h3>
+              <ol class="clean">
+                <li>已协调新增研制人员进行研制进度保障</li>
+                <li>优先对已确认功能部分进行开发</li>
+                <li>已形成保底技术方案，为后续节点交付提供兜底支撑。</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>重点风险项一</span><div class="line"></div><span>技术验证与研制并行推进</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">重点风险项</div>
+          <h2 class="title">TY-00-DZS-01 探路者一号卫星数据预处理与产品生成软件</h2>
+          <div class="subtitle">存在进度风险</div>
+        </div>
+        <div class="page-no">05</div>
+      </div>
+      <div class="content">
+        <div class="risk-box red">
+          <div class="risk-head">
+            <h3 class="risk-title">当前状态 <span class="pill"><span class="status red"></span></span></h3>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3 class="card-title">风险原因</h3>
+              <p class="card-subtitle">探路者一号数据产品格式说明外部输入滞后，导致该软件部分功能开发所依赖的输入条件尚未完全具备，软件研制进度存在风险。</p>
+              <h3 class="card-title" style="font-size:18px; margin-top:18px;">当前进展</h3>
+              <ol class="clean">
+                <li>已完成内部级别（0A、0B级）产品生产功能开发。</li>
+                <li>已获得 MHI、VLAST、朗缪尔探针、空间天气效应监测仪、分布式低频干涉成像谱仪的产品格式输入，相关功能正在开发中。</li>
+                <li>MHI 和高分辨率大气边界层激光探测仪产品格式仍未提供，已向总体汇报并协调推进。其中，MHI 反馈于 4 月中旬开展需求确认；高分辨率大气边界层激光探测仪尚未反馈。</li>
+              </ol>
+            </div>
+            <div class="panel">
+              <h3 class="card-title">进度影响判断</h3>
+              <ol class="clean">
+                <li>软件配置项测试计划和说明评审可延后开展，或仍按原计划开展，但需保留遗留项。</li>
+                <li>软件配置项测试实施存在较严重进度风险，建议延后开展；如仍按原计划推进，也需保留遗留项并纳入后续闭环。</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>重点风险项二</span><div class="line"></div><span>外部输入节奏直接影响测试实施节奏</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">二、后续工作计划</div>
+          <h2 class="title">下一阶段节点安排</h2>
+          <div class="subtitle">围绕配置项测试说明与计划评审、配置项测试实施及总结评审，推进后续工作。</div>
+        </div>
+        <div class="page-no">06</div>
+      </div>
+      <div class="content">
+        <div class="timeline">
+          <div class="time-card">
+            <div class="time-date">4月2日</div>
+            <p>开展软件配置项测试说明与计划评审</p>
+          </div>
+          <div class="time-card">
+            <div class="time-date">4月30日前</div>
+            <p>计划完成软件配置项测试，并根据实际完成情况择机开展软件配置项测试总结报告评审。</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 class="card-title">后续推进重点</h3>
+          <ol class="clean">
+            <li>持续跟踪三项重点关注软件的闭环进展。</li>
+            <li>对已具备条件的软件项，研发与测试准备并行推进，压缩整体测试前准备周期。</li>
+            <li>对受外部输入影响的软件项，做好遗留项管理与节点协调，保障总体测试工作有序开展。</li>
+          </ol>
+        </div>
+      </div>
+      <div class="footer"><span>后续工作计划</span><div class="line"></div><span>按节点组织评审与测试</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="header">
+        <div class="title-wrap">
+          <div class="section-label">三、待协调问题</div>
+          <h2 class="title">数据产品格式说明输入需外部协调</h2>
+          <div class="subtitle">当前重点是推进未完成载荷的产品需求确认，为后续软件开发与测试创造完整输入条件。</div>
+        </div>
+        <div class="page-no">07</div>
+      </div>
+      <div class="content">
+        <div class="issue-grid">
+          <div class="panel">
+            <h3 class="card-title">格式说明当前进展</h3>
+            <ol class="clean">
+              <li>已完成初步的 MHI、VLAST、朗缪尔探针、空间天气效应监测仪、分布式低频干涉成像谱仪产品格式及命名规范设计。</li>
+              <li>已完成部分载荷（4 个）的产品设计首轮需求确认，为相关功能开发提供了基础输入。</li>
+            </ol>
+          </div>
+          <div class="panel">
+            <h3 class="card-title">需进一步协调事项</h3>
+            <div class="highlight-list">
+              <div class="highlight-item">
+                <strong>MHI 产品需求确认</strong>
+                <span>当前反馈为 4 月中旬开展需求确认，需持续跟进确认结果及形成正式输入。</span>
+              </div>
+              <div class="highlight-item">
+                <strong>高分辨率大气边界层激光探测仪产品需求确认</strong>
+                <span>目前尚未收到反馈，需协调尽快明确需求确认时间及接口输入内容。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="footer"><span>待协调问题</span><div class="line"></div><span>外部输入是当前关键约束项</span></div>
+    </section>
+  </div>
 </body>
 </html>
