@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>数据处理与研究支持分系统工作进展及协调事项</title>
+  <title>数据处理与研究支持分系统工作进展及后续计划</title>
   <style>
     :root {
       --bg: #f5f6f7;
@@ -304,6 +304,11 @@
       line-height: 1.55;
     }
 
+    tbody td:first-child,
+thead th:first-child {
+  text-align: center;
+}
+
     tbody tr:nth-child(even) { background: #fafafa; }
     tbody tr:last-child td { border-bottom: none; }
 
@@ -433,6 +438,29 @@
       color: var(--muted);
       line-height: 1.8;
       font-size: clamp(15px, 1vw, 17px);
+    }
+
+
+    .important-row {
+      position: relative;
+      background: #fbf7ed !important;
+      box-shadow: inset 4px 0 0 var(--yellow);
+    }
+
+    .important-row td {
+      font-weight: 600;
+    }
+
+    .important-row td:nth-child(2) strong,
+    .important-row td:nth-child(3) {
+      color: #7a541a;
+    }
+
+    .badge.important {
+      color: #7a541a;
+      background: #fbf7ed;
+      border-color: rgba(185,150,82,0.42);
+      box-shadow: 0 0 0 2px rgba(185,150,82,0.08);
     }
 
     .controls {
@@ -591,7 +619,6 @@
           <div class="title-wrap">
             <div class="section-label">工作进展</div>
             <h1 class="title">探路者一号 数据处理与研究支持分系统工作进展及协调事项</h1>
-            <div class="subtitle">软件开发、测试区部署、配置项测试安排及外部数据协调情况</div>
           </div>
           <div class="page-no">01</div>
         </div>
@@ -599,55 +626,11 @@
           <div class="hero">
             <div class="panel">
               <div class="big-point">当前总体状态：软件陆续完成开发，正在测试区开展部署、自测与数据准备。</div>
-              <p class="lead">下一阶段工作将围绕软件配置项测试、首轮问题整改、回归测试、测试总结报告编制及分系统集成测试准备连续推进。当前关键协调事项是卫星系统测试数据的按期提供。</p>
-            </div>
-            <div class="panel">
-              <h3 class="card-title">汇报重点</h3>
-              <ol class="clean">
-                <li>当前进展与阶段判断</li>
-                <li>配置项测试及后续评审节点</li>
-                <li>卫星系统数据协调事项</li>
-                <li>总体反馈及后续闭环要求</li>
-              </ol>
+              <p class="lead">下一阶段工作将围绕软件配置项测试、首轮问题整改、回归测试、测试总结报告编制及分系统集成测试准备连续推进。</p>
             </div>
           </div>
         </div>
-        <div class="footer"><span>探路者一号 / 数据处理与研究支持分系统</span><div class="line"></div><span>工作进展及协调事项</span></div>
-      </div>
-    </section>
-
-    <section class="slide" data-title="当前进展">
-      <div class="slide-frame">
-        <div class="header">
-          <div class="title-wrap">
-            <div class="section-label">一、当前进展</div>
-            <h2 class="title">软件开发与测试区部署工作同步推进</h2>
-            <div class="subtitle">软件研制已由开发阶段逐步转入测试准备与测试实施阶段，当前重点是保障测试区部署、自测和测试数据准备按节点闭环。</div>
-          </div>
-          <div class="page-no">02</div>
-        </div>
-        <div class="content">
-          <div class="grid-3">
-            <div class="kpi">
-              <div class="num">开发完成</div>
-              <div class="label">各软件陆续完成开发，形成可部署、可测试的软件版本。</div>
-            </div>
-            <div class="kpi">
-              <div class="num">部署自测</div>
-              <div class="label">正在测试区开展软件部署、自测验证和基础数据准备工作。</div>
-            </div>
-            <div class="kpi">
-              <div class="num">测试转段</div>
-              <div class="label">后续将进入配置项测试、回归测试及测试总结评审阶段。</div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3 class="card-title">阶段判断</h3>
-            <p class="lead">总体来看，分系统软件工作已具备由研制交付向配置项测试组织实施转段的基础条件。后续需重点关注测试区环境稳定性、测试数据完整性和测试问题闭环效率，确保配置项测试和集成测试准备工作连续推进。</p>
-          </div>
-        </div>
-        <div class="footer"><span>当前进展</span><div class="line"></div><span>开发、部署、自测与数据准备并行推进</span></div>
+        <div class="footer"><span>探路者一号 / 数据处理与研究支持分系统</span><div class="line"></div><span>工作进展及后续计划</span></div>
       </div>
     </section>
 
@@ -656,8 +639,7 @@
         <div class="header">
           <div class="title-wrap">
             <div class="section-label">二、后续节点安排</div>
-            <h2 class="title">配置项测试及评审节点计划</h2>
-            <div class="subtitle">围绕“开发完成—测试区部署—配置项测试—回归测试—总结评审—集成测试准备”主线组织推进。</div>
+            <h2 class="title">后续计划节点</h2>
           </div>
           <div class="page-no">03</div>
         </div>
@@ -666,11 +648,9 @@
             <table>
               <thead>
                 <tr>
-                  <th style="width:8%">序号</th>
-                  <th style="width:16%">计划时间</th>
-                  <th style="width:31%">工作节点</th>
-                  <th>工作说明</th>
-                  <th style="width:12%">类别</th>
+                  <th style="width:20%">序号</th>
+                  <th style="width:15%">计划时间</th>
+                  <th style="width:55%">工作节点</th>
                 </tr>
               </thead>
               <tbody>
@@ -678,63 +658,47 @@
                   <td>1</td>
                   <td><strong>4月28日</strong></td>
                   <td>完成软件开发</td>
-                  <td>形成满足测试区部署条件的软件版本，支撑后续自测和配置项测试准备。</td>
-                  <td><span class="badge done">开发节点</span></td>
                 </tr>
                 <tr>
                   <td>2</td>
                   <td><strong>4月30日</strong></td>
                   <td>完成软件在测试区部署、自测与数据准备</td>
-                  <td>完成测试区环境部署、基础自测验证和测试输入数据准备。</td>
-                  <td><span class="badge key">转段节点</span></td>
                 </tr>
-                <tr>
+                <tr class="important-row">
                   <td>3</td>
                   <td><strong>5月6日</strong></td>
                   <td>开展软件配置项测试</td>
-                  <td>依据测试用例组织配置项测试实施，形成问题记录和整改输入。</td>
-                  <td><span class="badge key">测试节点</span></td>
                 </tr>
                 <tr>
                   <td>4</td>
                   <td><strong>5月9日</strong></td>
                   <td>完成首轮配置项测试</td>
-                  <td>完成首轮测试执行，形成首轮测试结果和问题闭环清单。</td>
-                  <td><span class="badge key">测试节点</span></td>
                 </tr>
                 <tr>
                   <td>5</td>
                   <td><strong>5月11日</strong></td>
                   <td>完成回归测试</td>
-                  <td>对首轮测试发现问题的整改情况开展回归验证，确认闭环状态。</td>
-                  <td><span class="badge key">测试节点</span></td>
                 </tr>
                 <tr>
                   <td>6</td>
                   <td><strong>5月12日</strong></td>
                   <td>完成配置项测试总结报告文档编制</td>
-                  <td>汇总测试过程、测试结果、问题处理情况和遗留事项。</td>
-                  <td><span class="badge review">文档节点</span></td>
                 </tr>
-                <tr>
+                <tr class="important-row">
                   <td>7</td>
                   <td><strong>5月13日</strong></td>
                   <td>开展软件配置项测试总结评审</td>
-                  <td>组织配置项测试总结报告评审，确认测试结论和遗留项处理安排。</td>
-                  <td><span class="badge review">评审节点</span></td>
                 </tr>
-                <tr>
+                <tr class="important-row">
                   <td>8</td>
                   <td><strong>5月14日</strong></td>
                   <td>开展分系统集成测试大纲和细则评审</td>
-                  <td>完成分系统集成测试组织依据确认，为后续集成测试实施奠定基础。</td>
-                  <td><span class="badge review">评审节点</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <div class="footer"><span>节点计划</span><div class="line"></div><span>按配置项测试和集成测试准备两条线推进</span></div>
+        <div class="footer"><span>计划节点</span><div class="line"></div></div>
       </div>
     </section>
 
@@ -744,14 +708,14 @@
           <div class="title-wrap">
             <div class="section-label">三、待协调事项</div>
             <h2 class="title">需协调卫星系统提供测试数据</h2>
-            <div class="subtitle">相关数据是后续软件自测、配置项测试和回归测试的重要输入条件，需按总体反馈节点持续跟踪。</div>
+            <div class="subtitle">相关数据是后续软件自测、配置项测试和回归测试的重要输入条件。</div>
           </div>
           <div class="page-no">04</div>
         </div>
         <div class="content">
           <div class="issue-grid">
             <div class="data-card">
-              <div class="data-head">A 星需提供数据</div>
+              <div class="data-head">A 星数据</div>
               <div class="data-body">
                 <ol class="clean">
                   <li>MHI 载荷数据</li>
@@ -761,7 +725,7 @@
               </div>
             </div>
             <div class="data-card">
-              <div class="data-head">BCD 星需提供数据</div>
+              <div class="data-head">BCD 星数据</div>
               <div class="data-body">
                 <ol class="clean">
                   <li>B 星务工程参数数据</li>
@@ -771,48 +735,10 @@
           </div>
 
           <div class="note-box">
-            总体已反馈：卫星系统计划于 <strong>5月10日前</strong> 提供上述相关数据。后续需进一步明确数据样例、数据覆盖范围、交付方式及格式说明，确保满足配置项测试和回归测试使用要求。
+            总体已反馈：卫星系统计划于 <strong>5月10日前</strong> 提供上述相关数据。
           </div>
         </div>
-        <div class="footer"><span>待协调事项</span><div class="line"></div><span>关键外部输入需按节点到位</span></div>
-      </div>
-    </section>
-
-    <section class="slide" data-title="结论与建议">
-      <div class="slide-frame">
-        <div class="header">
-          <div class="title-wrap">
-            <div class="section-label">四、总体判断</div>
-            <h2 class="title">后续推进重点</h2>
-            <div class="subtitle">在软件测试工作连续推进的同时，需将外部数据提供情况纳入节点跟踪和风险闭环。</div>
-          </div>
-          <div class="page-no">05</div>
-        </div>
-        <div class="content">
-          <div class="conclusion">
-            <h3>总体结论</h3>
-            <p>当前软件开发和测试区部署工作正在按计划推进，后续具备开展配置项测试和测试总结评审的组织基础。卫星系统数据提供是影响测试充分性和问题闭环效率的关键外部条件，需持续跟踪 5月10日前的数据交付情况。</p>
-          </div>
-          <div class="grid-2">
-            <div class="panel">
-              <h3 class="card-title">近期重点</h3>
-              <ol class="clean">
-                <li>按 4月30日 节点完成测试区部署、自测与数据准备。</li>
-                <li>按 5月6日 节点启动软件配置项测试。</li>
-                <li>跟踪首轮测试问题整改，确保 5月11日 完成回归测试。</li>
-              </ol>
-            </div>
-            <div class="panel">
-              <h3 class="card-title">协调闭环</h3>
-              <ol class="clean">
-                <li>持续跟踪 A 星及 BCD 星相关数据提供情况。</li>
-                <li>数据到位后及时纳入测试输入，开展补充验证。</li>
-                <li>如部分数据仍无法按期提供，应形成遗留项并纳入测试总结报告闭环管理。</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        <div class="footer"><span>总体判断</span><div class="line"></div><span>测试推进与数据协调同步闭环</span></div>
+        <div class="footer"><span>待协调事项</span><div class="line"></div></div>
       </div>
     </section>
   </div>
