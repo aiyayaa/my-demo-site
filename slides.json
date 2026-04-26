@@ -1,0 +1,20 @@
+[
+  {
+    "title": "3月26日探路者调度会-数据分系统进展",
+    "description": "工作进展、问题风险与后续计划汇报",
+    "date": "2026-03-26",
+    "path": "presentations/3月26日探路者调度会-数据分系统进展/"
+  },
+  {
+    "title": "探源科学卫星接口设计汇报",
+    "description": "分系统接口、数据实体与通信方式整理",
+    "date": "2026-04-20",
+    "path": "presentations/ty-interface-design/"
+  },
+  {
+    "title": "EventCatalog 建模说明",
+    "description": "Command、Data Store、Container 建模展示",
+    "date": "2026-04-18",
+    "path": "presentations/eventcatalog-report/"
+  }
+]

@@ -1,4 +1,131 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  color: #1f2937;
+  background: #f5f7fb;
+}
+
+.site-header {
+  background: #1f3a5f;
+  color: #fff;
+  padding: 42px 8vw;
+  border-bottom: 4px solid #d6a84f;
+}
+
+.site-header h1 {
+  margin: 0 0 12px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.site-header p {
+  margin: 0;
+  font-size: 16px;
+  color: #dbe7f5;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 24px 56px;
+}
+
+.section-title {
+  margin-bottom: 22px;
+}
+
+.section-title h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #1f3a5f;
+}
+
+.section-title p {
+  margin: 0;
+  color: #667085;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  display: block;
+  padding: 22px 24px;
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 14px rgba(31, 58, 95, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(31, 58, 95, 0.14);
+}
+
+.card-date {
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #7a8699;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 19px;
+  color: #1f3a5f;
+  line-height: 1.4;
+}
+
+.card p {
+  min-height: 44px;
+  margin: 0 0 18px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.card-link {
+  color: #b27820;
+  font-weight: 600;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.site-footer {
+  padding: 24px;
+  text-align: center;
+  color: #7a8699;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 32px 24px;
+  }
+
+  .site-header h1 {
+    font-size: 26px;
+  }
+
+  .container {
+    padding: 28px 18px 42px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
