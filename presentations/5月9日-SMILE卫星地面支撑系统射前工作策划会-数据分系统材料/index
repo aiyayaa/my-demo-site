@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SMILE卫星数据处理与管理分系统软件技术状态确认</title>
+  <style>
+    :root {
+      --bg: #f5f6f7;
+      --panel: #ffffff;
+      --panel-2: #f7f8f9;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: rgba(31, 41, 55, 0.08);
+      --blue: #4d6178;
+      --green: #6a8d7c;
+      --yellow: #b99652;
+      --red: #b77474;
+      --outer-padding: clamp(12px, 1.6vw, 24px);
+      --slide-gap: clamp(10px, 1.2vw, 18px);
+      --title-size: clamp(27px, 2.25vw, 38px);
+      --subtitle-size: clamp(14px, 1.02vw, 17px);
+      --body-size: clamp(14px, 0.94vw, 16px);
+      --small-size: clamp(12px, 0.82vw, 14px);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body { min-height: 100vh; }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .deck::-webkit-scrollbar { width: 8px; }
+    .deck::-webkit-scrollbar-thumb {
+      background: rgba(31,41,55,0.18);
+      border-radius: 999px;
+    }
+    .deck::-webkit-scrollbar-track { background: rgba(31,41,55,0.04); }
+
+    .slide {
+      min-height: 100vh;
+      height: 100vh;
+      padding: var(--outer-padding);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      background: var(--bg);
+    }
+
+    .slide-frame {
+      position: relative;
+      z-index: 1;
+      width: min(96vw, calc(96vh * 16 / 9));
+      height: min(96vh, calc(96vw * 9 / 16));
+      max-width: 1700px;
+      max-height: 956px;
+      padding: clamp(24px, 2vw, 40px) clamp(28px, 2.2vw, 52px) clamp(20px, 1.8vw, 34px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: var(--slide-gap);
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid rgba(31,41,55,0.08);
+      overflow: hidden;
+    }
+
+    .slide-frame::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #5b6f86;
+      z-index: 0;
+    }
+
+    .header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .title-wrap { max-width: 86%; min-width: 0; }
+
+    .title {
+      margin: 0;
+      font-size: var(--title-size);
+      line-height: 1.24;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+      color: #1f2937;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: var(--subtitle-size);
+      line-height: 1.68;
+    }
+
+    .page-no {
+      color: rgba(31,41,55,0.48);
+      font-size: clamp(16px, 1.02vw, 18px);
+      font-weight: 600;
+      padding-top: 6px;
+      white-space: nowrap;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 1.05vw, 18px);
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-top: 8px;
+      color: rgba(31,41,55,0.48);
+      font-size: var(--small-size);
+    }
+
+    .footer .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(77,97,120,0.55), rgba(31,41,55,0.04));
+      border-radius: 999px;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: var(--small-size);
+      font-weight: 700;
+      color: #3d5168;
+      background: #f3f5f7;
+      border: 1px solid rgba(77,97,120,0.12);
+      width: fit-content;
+      margin-bottom: 10px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: clamp(14px, 1.2vw, 22px);
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(31,41,55,0.08);
+      border-radius: 6px;
+      padding: clamp(16px, 1.35vw, 24px) clamp(18px, 1.45vw, 26px);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .panel.soft {
+      background: #f7f8f9;
+      border-color: rgba(31,41,55,0.06);
+    }
+
+    .big-point {
+      font-size: clamp(18px, 1.35vw, 22px);
+      line-height: 1.8;
+      font-weight: 700;
+      margin: 6px 0;
+    }
+
+    .lead {
+      font-size: clamp(15px, 1vw, 17px);
+      line-height: 1.85;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(10px, 0.95vw, 16px);
+      min-height: 0;
+    }
+
+    .kpi {
+      padding: clamp(16px, 1.25vw, 20px);
+      border-radius: 6px;
+      background: #f7f8f9;
+      border: 1px solid rgba(31,41,55,0.06);
+      min-width: 0;
+    }
+
+    .kpi .num {
+      font-size: clamp(28px, 2vw, 36px);
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #243447;
+    }
+
+    .kpi .label {
+      font-size: clamp(14px, 0.9vw, 15px);
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .card-title {
+      margin: 0 0 10px;
+      font-size: clamp(17px, 1.3vw, 20px);
+      line-height: 1.45;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .card-subtitle {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: clamp(14px, 0.88vw, 15px);
+      line-height: 1.75;
+    }
+
+    ul.clean, ol.clean {
+      margin: 6px 0 0 0;
+      padding-left: 20px;
+      line-height: 1.85;
+      font-size: var(--body-size);
+    }
+
+    ul.clean li, ol.clean li { margin: 4px 0; }
+
+    .table-wrap {
+      background: #ffffff;
+      border: 1px solid rgba(31,41,55,0.08);
+      border-radius: 6px;
+      overflow: auto;
+      max-height: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(12px, 0.78vw, 14px);
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f0f3f6;
+      color: #243447;
+      font-weight: 700;
+      text-align: left;
+      padding: 11px 10px;
+      border-bottom: 1px solid rgba(31,41,55,0.08);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(31,41,55,0.06);
+      color: #1f2937;
+      vertical-align: middle;
+      line-height: 1.48;
+    }
+
+    tbody td:first-child,
+    thead th:first-child {
+      text-align: center;
+    }
+
+    tbody tr:nth-child(even) { background: #fafafa; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 62px;
+      padding: 5px 9px;
+      border-radius: 4px;
+      font-size: var(--small-size);
+      font-weight: 700;
+      color: #3d5168;
+      background: #f3f5f7;
+      border: 1px solid rgba(77,97,120,0.12);
+      white-space: nowrap;
+    }
+
+    .badge.done { color: #406a59; background: #f0f6f3; border-color: rgba(106,141,124,0.18); }
+    .badge.key { color: #7a541a; background: #fbf7ed; border-color: rgba(185,150,82,0.22); }
+    .badge.review { color: #3d5168; background: #eef2f6; border-color: rgba(77,97,120,0.18); }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(10px, 0.9vw, 14px);
+      margin-bottom: clamp(10px, 0.9vw, 14px);
+    }
+
+    .summary-item {
+      border-radius: 6px;
+      background: #f7f8f9;
+      border: 1px solid rgba(31,41,55,0.06);
+      padding: clamp(12px, 1vw, 16px);
+      min-width: 0;
+    }
+
+    .summary-item .num {
+      font-size: clamp(22px, 1.55vw, 28px);
+      font-weight: 700;
+      color: #243447;
+      margin-bottom: 4px;
+    }
+
+    .summary-item .text {
+      color: var(--muted);
+      font-size: clamp(12px, 0.82vw, 14px);
+      line-height: 1.6;
+    }
+
+    .issue-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(12px, 1.2vw, 22px);
+    }
+
+    .data-card {
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid rgba(31,41,55,0.08);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .data-card .data-head {
+      padding: 14px 18px;
+      background: #f0f3f6;
+      color: #243447;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(31,41,55,0.08);
+    }
+
+    .data-card .data-body { padding: 16px 20px; }
+
+    .highlight-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .highlight-item {
+      padding: 16px 16px;
+      border-radius: 6px;
+      background: #f8f9fb;
+      border: 1px solid rgba(31,41,55,0.06);
+      min-width: 0;
+    }
+
+    .highlight-item strong {
+      display: block;
+      font-size: clamp(15px, 0.98vw, 16px);
+      margin-bottom: 6px;
+      color: #1f2937;
+    }
+
+    .highlight-item span {
+      color: var(--muted);
+      font-size: clamp(14px, 0.88vw, 15px);
+      line-height: 1.75;
+    }
+
+    .note-box {
+      border-radius: 6px;
+      padding: clamp(16px, 1.35vw, 20px) clamp(18px, 1.45vw, 22px);
+      background: #fbf7ed;
+      border: 1px solid rgba(185,150,82,0.22);
+      border-left: 4px solid var(--yellow);
+      color: #4a3b24;
+      line-height: 1.8;
+      font-size: var(--body-size);
+    }
+
+    .conclusion {
+      border-radius: 6px;
+      padding: clamp(18px, 1.5vw, 24px);
+      background: #ffffff;
+      border: 1px solid rgba(31,41,55,0.08);
+      border-left: 4px solid var(--green);
+    }
+
+    .conclusion h3 {
+      margin: 0 0 8px;
+      font-size: clamp(20px, 1.5vw, 24px);
+      color: #243447;
+    }
+
+    .conclusion p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: clamp(15px, 1vw, 17px);
+    }
+
+    .status-row {
+      position: relative;
+      background: #f0f6f3 !important;
+      box-shadow: inset 4px 0 0 var(--green);
+    }
+
+    .controls {
+      position: fixed;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      opacity: 0.72;
+    }
+
+    .nav-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 10px 6px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(31,41,55,0.10);
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(77,97,120,0.25);
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      padding: 0;
+    }
+
+    .nav-dot:hover { transform: scale(1.08); }
+    .nav-dot.active {
+      background: var(--blue);
+      box-shadow: 0 0 0 3px rgba(77,97,120,0.10);
+      transform: scale(1.02);
+    }
+
+    .nav-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 4px;
+      border: 1px solid rgba(31,41,55,0.10);
+      background: rgba(255,255,255,0.97);
+      color: #31445f;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .nav-btn:hover { background: #f2f5f8; }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .hint {
+      position: fixed;
+      left: 16px;
+      bottom: 14px;
+      z-index: 30;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(31,41,55,0.10);
+      color: rgba(31,41,55,0.56);
+      font-size: 12px;
+      letter-spacing: 0.1px;
+    }
+
+    @media (max-aspect-ratio: 4/3) {
+      .slide-frame {
+        width: 96vw;
+        height: 96vh;
+      }
+      .hero, .grid-3, .issue-grid { grid-template-columns: 1fr; }
+      .summary-strip { grid-template-columns: repeat(2, 1fr); }
+      .title-wrap { max-width: 100%; }
+      .content { overflow: auto; padding-right: 4px; }
+    }
+
+    @media (max-width: 980px) {
+      html, body { overflow: auto; }
+      .deck {
+        width: 100%;
+        height: auto;
+        overflow-y: visible;
+        scroll-snap-type: none;
+      }
+      .slide {
+        height: auto;
+        min-height: 100svh;
+      }
+      .slide-frame {
+        width: 100%;
+        height: auto;
+        min-height: calc(100svh - 2 * var(--outer-padding));
+      }
+      .title-wrap { max-width: 100%; }
+      .hero, .grid-3, .issue-grid, .summary-strip { grid-template-columns: 1fr; }
+      .controls, .hint { display: none; }
+      .content { overflow: visible; }
+    }
+
+    @media print {
+      html, body {
+        overflow: visible;
+        background: white;
+      }
+      .deck {
+        height: auto;
+        overflow: visible;
+        scroll-snap-type: none;
+      }
+      .slide {
+        height: auto;
+        min-height: auto;
+        padding: 0;
+        page-break-after: always;
+      }
+      .slide-frame {
+        width: 100%;
+        height: auto;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .controls, .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="controls" aria-label="演示翻页控制">
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prevBtn" aria-label="上一页">↑</button>
+    </div>
+    <div class="nav-dots" id="navDots"></div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="nextBtn" aria-label="下一页">↓</button>
+    </div>
+  </div>
+  <div class="hint">方向键翻页 · 空格下一页</div>
+
+  <div class="deck" id="deck">
+    <section class="slide" data-title="封面">
+      <div class="slide-frame">
+        <div class="header">
+          <div class="title-wrap">
+            <div class="section-label">技术状态确认</div>
+            <h1 class="title">SMILE卫星数据处理与管理分系统软件技术状态确认</h1>
+            <div class="subtitle">围绕软件版本固化、快视容器部署及遗留问题状态进行确认。</div>
+          </div>
+          <div class="page-no">01</div>
+        </div>
+        <div class="content">
+          <div class="hero">
+            <div class="panel">
+              <div class="big-point">总体状态：软件状态已固化，欧方快视容器已协调并完成部署，当前无遗留问题。</div>
+              <p class="lead">本页面用于汇总SMILE卫星数据处理与管理分系统相关软件配置项的当前版本、共用/专用属性及关键技术状态确认结论。</p>
+            </div>
+            <div class="grid-3">
+              <div class="kpi">
+                <div class="num">14</div>
+                <div class="label">项软件纳入本次技术状态确认</div>
+              </div>
+              <div class="kpi">
+                <div class="num">9</div>
+                <div class="label">项共用软件状态已固化</div>
+              </div>
+              <div class="kpi">
+                <div class="num">5</div>
+                <div class="label">项SMILE专用软件状态已固化</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span>SMILE卫星 / 数据处理与管理分系统</span><div class="line"></div><span>软件技术状态确认</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="软件状态">
+      <div class="slide-frame">
+        <div class="header">
+          <div class="title-wrap">
+            <div class="section-label">一、软件状态已固化</div>
+            <h2 class="title">软件配置项版本状态</h2>
+            <div class="subtitle">以下软件代号、软件名称、目前版本及专用/共用属性已纳入本次状态确认。</div>
+          </div>
+          <div class="page-no">02</div>
+        </div>
+        <div class="content">
+          <div class="summary-strip">
+            <div class="summary-item">
+              <div class="num">V2.83</div>
+              <div class="text">最高版本：业务调度与综合监管软件配置项</div>
+            </div>
+            <div class="summary-item">
+              <div class="num">V1.32</div>
+              <div class="text">SMILE卫星数据发布软件配置项</div>
+            </div>
+            <div class="summary-item">
+              <div class="num">共用</div>
+              <div class="text">基础支撑类软件配置项</div>
+            </div>
+            <div class="summary-item">
+              <div class="num">专用</div>
+              <div class="text">SMILE任务专用数据处理软件</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:6%">序号</th>
+                  <th style="width:18%">软件代号</th>
+                  <th style="width:48%">软件名称</th>
+                  <th style="width:12%">目前版本</th>
+                  <th style="width:16%">专用/共用</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><strong>KXII-DZS00-01</strong></td>
+                  <td>数据处理作业管理软件配置项</td>
+                  <td>V2.00</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><strong>KXII-DZS00-02</strong></td>
+                  <td>科学档案管理软件配置项</td>
+                  <td>V2.00</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><strong>KXII-DZS00-03</strong></td>
+                  <td>数据存储与灾备软件配置项</td>
+                  <td>V2.30</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><strong>KXII-DZS00-04</strong></td>
+                  <td>业务调度与综合监管软件配置项</td>
+                  <td>V2.83</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><strong>KXII-DZS00-05</strong></td>
+                  <td>计算资源调度服务引擎软件配置项</td>
+                  <td>V1.50</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td><strong>KXII-DZS00-06</strong></td>
+                  <td>用户管理与安全审计软件配置项</td>
+                  <td>V1.50</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td><strong>KXII-DZS00-07</strong></td>
+                  <td>科学档案发布软件配置项</td>
+                  <td>V1.90</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td><strong>KXII-DZS00-08</strong></td>
+                  <td>任务运行网PaaS服务软件配置项</td>
+                  <td>V2.11</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td><strong>KXII-DZS00-09</strong></td>
+                  <td>系统测试验证软件</td>
+                  <td>V1.70</td>
+                  <td><span class="badge done">共用</span></td>
+                </tr>
+                <tr class="status-row">
+                  <td>10</td>
+                  <td><strong>KXII-DZS05-01</strong></td>
+                  <td>SMILE卫星数据预处理与产品生产软件配置项</td>
+                  <td>V1.50</td>
+                  <td><span class="badge key">专用</span></td>
+                </tr>
+                <tr class="status-row">
+                  <td>11</td>
+                  <td><strong>KXII-DZS05-02</strong></td>
+                  <td>SMILE卫星数据库及管理软件配置项</td>
+                  <td>V1.40</td>
+                  <td><span class="badge key">专用</span></td>
+                </tr>
+                <tr class="status-row">
+                  <td>12</td>
+                  <td><strong>KXII-DZS05-03</strong></td>
+                  <td>SMILE卫星数据质量分析与评估软件配置项</td>
+                  <td>V1.41</td>
+                  <td><span class="badge key">专用</span></td>
+                </tr>
+                <tr class="status-row">
+                  <td>13</td>
+                  <td><strong>KXII-DZS05-04</strong></td>
+                  <td>SMILE卫星数据服务与应用支持软件配置项</td>
+                  <td>V1.41</td>
+                  <td><span class="badge key">专用</span></td>
+                </tr>
+                <tr class="status-row">
+                  <td>14</td>
+                  <td><strong>KXII-DZS05-05</strong></td>
+                  <td>SMILE卫星数据发布软件配置项</td>
+                  <td>V1.32</td>
+                  <td><span class="badge key">专用</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="footer"><span>软件版本状态</span><div class="line"></div><span>共用软件9项 / 专用软件5项</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="快视容器">
+      <div class="slide-frame">
+        <div class="header">
+          <div class="title-wrap">
+            <div class="section-label">二、欧方快视容器状态</div>
+            <h2 class="title">快视容器已完成协调部署</h2>
+            <div class="subtitle">欧方快视容器已部署到位，具备快视图像生产能力。</div>
+          </div>
+          <div class="page-no">03</div>
+        </div>
+        <div class="content">
+          <div class="issue-grid">
+            <div class="data-card">
+              <div class="data-head">部署状态</div>
+              <div class="data-body">
+                <div class="highlight-list">
+                  <div class="highlight-item">
+                    <strong>协调状态</strong>
+                    <span>欧方快视容器已完成相关协调，部署条件已落实。</span>
+                  </div>
+                  <div class="highlight-item">
+                    <strong>部署状态</strong>
+                    <span>快视容器已完成部署，具备开展快视处理的运行环境。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="data-card">
+              <div class="data-head">能力确认</div>
+              <div class="data-body">
+                <div class="highlight-list">
+                  <div class="highlight-item">
+                    <strong>处理能力</strong>
+                    <span>当前已可以通过部署后的欧方快视容器生产出快视图像。</span>
+                  </div>
+                  <div class="highlight-item">
+                    <strong>技术状态</strong>
+                    <span>快视图像生产链路具备状态确认基础，可支撑后续相关测试与业务验证。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="note-box">
+            确认结论：欧方快视容器已协调并完成部署，当前可以生产出快视图像。
+          </div>
+        </div>
+        <div class="footer"><span>快视容器状态</span><div class="line"></div><span>已完成部署 / 可生产快视图像</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="确认结论">
+      <div class="slide-frame">
+        <div class="header">
+          <div class="title-wrap">
+            <div class="section-label">三、技术状态确认结论</div>
+            <h2 class="title">当前无遗留问题</h2>
+            <div class="subtitle">本次确认范围内，软件状态、快视容器部署状态及遗留问题状态明确。</div>
+          </div>
+          <div class="page-no">04</div>
+        </div>
+        <div class="content">
+          <div class="conclusion">
+            <h3>确认结论</h3>
+            <p>SMILE卫星数据处理与管理分系统相关软件状态已固化；欧方快视容器已完成协调和部署，并能够生产出快视图像；截至当前，本次确认范围内无遗留问题。</p>
+          </div>
+          <div class="grid-3">
+            <div class="kpi">
+              <div class="num">已固化</div>
+              <div class="label">软件配置项版本状态清晰，可作为后续工作基线。</div>
+            </div>
+            <div class="kpi">
+              <div class="num">已部署</div>
+              <div class="label">欧方快视容器完成部署，快视能力已具备。</div>
+            </div>
+            <div class="kpi">
+              <div class="num">无遗留</div>
+              <div class="label">当前无遗留问题，状态满足确认要求。</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span>确认结论</span><div class="line"></div><span>软件状态固化 / 快视能力具备 / 当前无遗留问题</span></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const deck = document.getElementById('deck');
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const navDots = document.getElementById('navDots');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      let currentIndex = 0;
+      let isAnimating = false;
+      let wheelLock = false;
+
+      slides.forEach((slide, index) => {
+        slide.dataset.index = index;
+        const dot = document.createElement('button');
+        dot.className = 'nav-dot';
+        dot.type = 'button';
+        dot.title = `${index + 1}. ${slide.dataset.title || '第' + (index + 1) + '页'}`;
+        dot.setAttribute('aria-label', dot.title);
+        dot.addEventListener('click', () => goTo(index));
+        navDots.appendChild(dot);
+      });
+
+      const dots = Array.from(navDots.querySelectorAll('.nav-dot'));
+
+      function updateActive(index) {
+        currentIndex = index;
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === slides.length - 1;
+      }
+
+      function goTo(index) {
+        if (index < 0 || index >= slides.length) return;
+        isAnimating = true;
+        slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        updateActive(index);
+        clearTimeout(goTo._timer);
+        goTo._timer = setTimeout(() => {
+          isAnimating = false;
+        }, 700);
+      }
+
+      function next() {
+        if (currentIndex < slides.length - 1) goTo(currentIndex + 1);
+      }
+
+      function prev() {
+        if (currentIndex > 0) goTo(currentIndex - 1);
+      }
+
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+
+      document.addEventListener('keydown', (event) => {
+        const key = event.key;
+        if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(key)) {
+          event.preventDefault();
+          next();
+        } else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(key)) {
+          event.preventDefault();
+          prev();
+        } else if (key === 'Home') {
+          event.preventDefault();
+          goTo(0);
+        } else if (key === 'End') {
+          event.preventDefault();
+          goTo(slides.length - 1);
+        }
+      }, { passive: false });
+
+      deck.addEventListener('wheel', (event) => {
+        if (window.innerWidth <= 980) return;
+        if (wheelLock || isAnimating) {
+          event.preventDefault();
+          return;
+        }
+        if (Math.abs(event.deltaY) < 18) return;
+        event.preventDefault();
+        wheelLock = true;
+        if (event.deltaY > 0) next();
+        else prev();
+        setTimeout(() => { wheelLock = false; }, 750);
+      }, { passive: false });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+            const idx = Number(entry.target.dataset.index);
+            updateActive(idx);
+          }
+        });
+      }, {
+        root: deck,
+        threshold: [0.6, 0.75]
+      });
+
+      slides.forEach((slide) => observer.observe(slide));
+      updateActive(0);
+    })();
+  </script>
+</body>
+</html>
